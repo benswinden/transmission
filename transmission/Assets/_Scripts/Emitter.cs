@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class Emitter : MonoBehaviour {
 
     public GameObject meshObject;
-    public GameObject obj;
+    public List<GameObject> prefabList;
 
     [Space]
 
@@ -31,7 +31,7 @@ public class Emitter : MonoBehaviour {
 
         yield return new WaitForSeconds(waitTime);
 
-        Instantiate(obj, vertexList[Random.Range(0, vertexList.Count)], Quaternion.identity);
+        Instantiate(prefabList[Random.Range(0, prefabList.Count)] , vertexList[Random.Range(0, vertexList.Count)], Quaternion.identity);
 
         StartCoroutine("createObject");
     }
