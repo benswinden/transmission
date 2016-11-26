@@ -17,4 +17,14 @@ public class Particle : MonoBehaviour {
         if (particleForce != 0) rigidbody.AddForce(transform.up * particleForce, ForceMode.Impulse);
     }
 
+    void OnTriggerEnter(Collider other) {
+
+        kill();
+    }
+
+    void kill() {
+
+        Destroy(gameObject);
+    }
+
 }
