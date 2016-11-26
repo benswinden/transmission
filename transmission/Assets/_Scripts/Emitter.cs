@@ -4,12 +4,18 @@ using System.Collections.Generic;
 
 public class Emitter : MonoBehaviour {
 
-    public GameObject meshObject;
-    public List<GameObject> prefabList;
+    public List<Mesh> meshList;
+    public GameObject particlePrefab;
 
     [Space]
 
+    public GameObject emissionMesh;
+
+    [Space]
+
+    public float particleForce;
     public float waitTime = 0.5f;
+
 
 
     List<Vector3> vertexList = new List<Vector3>();
@@ -17,23 +23,28 @@ public class Emitter : MonoBehaviour {
 
     void Awake() {
 
-        var verticeList = meshObject.GetComponent<MeshFilter>().mesh.vertices;
+        var verticeList = emissionMesh.GetComponent<MeshFilter>().mesh.vertices;
 
         foreach (var item in verticeList) {
 
-            vertexList.Add( meshObject.transform.TransformPoint(item));
+            vertexList.Add(emissionMesh.transform.TransformPoint(item));
         }
 
-        StartCoroutine("createObject");
+        StartCoroutine("instatiateLoop");
     }
 
-    IEnumerator createObject() {
+    IEnumerator instatiateLoop() {
 
         yield return new WaitForSeconds(waitTime);
 
-        Instantiate(prefabList[Random.Range(0, prefabList.Count)] , vertexList[Random.Range(0, vertexList.Count)], Quaternion.identity);
+        createObject();
 
-        StartCoroutine("createObject");
+        StartCoroutine("instatiateLoop");
     }
 
+    void createObject() {
+        
+        GameObject obj = Instantiate(particlePrefab, vertexList[Random.Range(0, vertexList.Count)], Quaternion.identity) as GameObject;
+        obj.GetComponent<Particle>().initialize(meshList[Random.Range(0, meshList.Count)], particleForce);
+    }
 }
