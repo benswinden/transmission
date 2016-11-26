@@ -4,17 +4,18 @@ using System.Collections;
 public class Particle : MonoBehaviour {
 
 
-    Rigidbody rigidbody;
+    Rigidbody rigidbodyComponent;
 
     void Awake() {
 
-        rigidbody = GetComponent<Rigidbody>();        
+        rigidbodyComponent = GetComponent<Rigidbody>();        
     }
 
-    public void initialize(Mesh mesh, float particleForce) {
+    public void initialize(Mesh mesh, float particleForce, bool randomStartRotation) {
 
         GetComponentInChildren<MeshFilter>().mesh = mesh;
-        if (particleForce != 0) rigidbody.AddForce(transform.up * particleForce, ForceMode.Impulse);
+        if (particleForce != 0) rigidbodyComponent.AddForce(transform.up * particleForce, ForceMode.Impulse);
+        if (randomStartRotation) transform.rotation = Random.rotation;
     }
 
     void OnTriggerEnter(Collider other) {
