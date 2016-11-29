@@ -104,4 +104,14 @@ public class TrajectoryTrack : MonoBehaviour {
 			PlaybackPointBuffer.Add(point);
 		}
 	}
+
+	public int NumPoints
+	{
+		get
+		{
+			return NumDisplayPoints;
+		}
+	}
+
+
 }

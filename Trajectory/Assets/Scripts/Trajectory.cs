@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-//trigger down state
+//which controller
 public enum Controller {
 	Controller1,
 	Controller2,
@@ -12,6 +13,8 @@ public enum Controller {
 public class Trajectory : MonoBehaviour {
 
 	public GameObject TrajectoryTrackPrefab;
+
+	public Text DebugText;
 
 	//offset from center of controller to draw line (pen tip)
 	public Vector3 DrawOffset;
@@ -26,7 +29,7 @@ public class Trajectory : MonoBehaviour {
 	//recorder
 	private TrackRecorder Recorder;
 
-	//current track
+	//current tracks (for each hand)
 	private GameObject CurrentTrack1;
 	private GameObject CurrentTrack2;
 	private TrajectoryTrack CurrentTrajectoryTrack1;
@@ -35,12 +38,19 @@ public class Trajectory : MonoBehaviour {
 	//all tracks
 	private List<TrajectoryTrack> TrajectoryTracks;
 
+	//settings
+	private int MaxTotalPoints = 1000;
+
+	//state
+	private int NumTotalPoints = 0;
+
 	void Awake () {
 		//cache references
 		VRManagerGO = GameObject.Find("VRManager");
 		VRManager = VRManagerGO.GetComponent<VRManager>();
 		TR = GetComponent<Transform>();
 		TrajectoryTracks = new List<TrajectoryTrack>();
+		DebugText.text = MaxTotalPoints.ToString();
 	}
 
 	void Start() {
@@ -100,6 +110,8 @@ public class Trajectory : MonoBehaviour {
 		if (whichController == Controller.Controller2) {
 			CurrentTrajectoryTrack2.AddTrackPoint(trackPoint);
 		}
+		NumTotalPoints++;
+		DebugText.text = (MaxTotalPoints - NumTotalPoints).ToString();
 	}
 
 }

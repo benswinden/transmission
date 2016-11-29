@@ -31,6 +31,15 @@ public class TrackData {
 		}
 	}
 
+	//number of points
+	public int NumPoints
+	{
+		get
+		{
+			return PointList.Count;
+		}
+	}
+
 	public void NormalizePosition() {
 		//center position of all points based on average position
 		Vector3 average = Vector3.zero;

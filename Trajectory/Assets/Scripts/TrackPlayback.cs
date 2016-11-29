@@ -24,7 +24,6 @@ public class TrackPlayback : MonoBehaviour {
 	
 	//line display
 	protected LineDisplay TrackDisplay;
-
 	private List<Vector3> PlaybackLinePoints;
 	
 	//scale to multiply normalized Track line to world units

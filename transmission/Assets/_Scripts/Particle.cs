@@ -20,7 +20,7 @@ public class Particle : MonoBehaviour {
 
     void OnTriggerEnter(Collider other) {
 
-        kill();
+        //kill();
     }
 
     void kill() {
