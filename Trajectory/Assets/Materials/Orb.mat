@@ -6,10 +6,10 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: DefaultLine3D
-  m_Shader: {fileID: 10755, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
+  m_Name: Orb
+  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+  m_ShaderKeywords: _EMISSION
+  m_LightmapFlags: 1
   m_CustomRenderQueue: -1
   stringTagMap: {}
   m_SavedProperties:
@@ -74,9 +74,6 @@ Material:
         name: _BumpScale
       second: 1
     - first:
-        name: _ColorMask
-      second: 15
-    - first:
         name: _Cutoff
       second: 0.5
     - first:
@@ -86,14 +83,17 @@ Material:
         name: _DstBlend
       second: 0
     - first:
-        name: _Glossiness
-      second: 0.5
+        name: _GlossMapScale
+      second: 1
     - first:
-        name: _InvFade
+        name: _Glossiness
+      second: 0.71
+    - first:
+        name: _GlossyReflections
       second: 1
     - first:
         name: _Metallic
-      second: 0
+      second: 0.82
     - first:
         name: _Mode
       second: 0
@@ -104,23 +104,14 @@ Material:
         name: _Parallax
       second: 0.02
     - first:
-        name: _SrcBlend
+        name: _SmoothnessTextureChannel
+      second: 0
+    - first:
+        name: _SpecularHighlights
       second: 1
     - first:
-        name: _Stencil
-      second: 0
-    - first:
-        name: _StencilComp
-      second: 8
-    - first:
-        name: _StencilOp
-      second: 0
-    - first:
-        name: _StencilReadMask
-      second: 255
-    - first:
-        name: _StencilWriteMask
-      second: 255
+        name: _SrcBlend
+      second: 1
     - first:
         name: _UVSec
       second: 0
@@ -130,10 +121,7 @@ Material:
     m_Colors:
     - first:
         name: _Color
-      second: {r: 1, g: 1, b: 1, a: 1}
+      second: {r: 0, g: 0, b: 0, a: 1}
     - first:
         name: _EmissionColor
       second: {r: 0, g: 0, b: 0, a: 1}
-    - first:
-        name: _TintColor
-      second: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}

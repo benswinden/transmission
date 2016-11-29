@@ -88,8 +88,8 @@ public class TrackRecorder {
 		DrawOffset = drawOffset;
 	}
 
-	public void Update() {
-
+	public void Update(Vector3 drawOffset) {
+		DrawOffset = drawOffset;
 	}
 
 }

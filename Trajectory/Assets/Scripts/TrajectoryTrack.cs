@@ -16,6 +16,8 @@ public class TrajectoryTrack : MonoBehaviour {
 	//line display
 	private LineDisplay TrackDisplay;
 
+	private bool _IsPlaying = false;
+
 	void Awake () {
 		TrackDisplay = GetComponent<LineDisplay>();
 		PlaybackLinePoints = new List<Vector3>();
@@ -32,6 +34,8 @@ public class TrajectoryTrack : MonoBehaviour {
 	}
 
 	public void StartTrackPlayback() {
+		_IsPlaying = true;
+		//
 		TrackDisplay.ClearLine();
 		//set initial playback Track points
 		PlaybackPointBuffer = new List<Vector3>(TrackData.TrackPoints);
@@ -109,9 +113,16 @@ public class TrajectoryTrack : MonoBehaviour {
 	{
 		get
 		{
-			return NumDisplayPoints;
+			return TrackData.TrackPoints.Count;
 		}
 	}
 
+	public bool IsPlaying
+	{
+		get
+		{
+			return _IsPlaying;
+		}
+	}
 
 }
