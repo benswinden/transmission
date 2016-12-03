@@ -73,11 +73,12 @@ public class Emitter : MonoBehaviour {
         if (!found) {
 
             var tempNewObject = new GameObject();
+            tempNewObject.transform.position = vertex;
             newObj.transform.parent = tempNewObject.transform;            
-            newObj = tempNewObject;
+            newObj = tempNewObject;            
         }
 
-        newObj.name = "Particle";
+        newObj.name = "Particle [ " + meshObjectPrefab.name + " ]";
         newObj.AddComponent<Particle>();                
 
         newObj.GetComponent<Particle>().rigidbodyComponent = newObj.AddComponent<Rigidbody>();
