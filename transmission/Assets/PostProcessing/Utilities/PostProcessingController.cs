@@ -68,12 +68,12 @@ namespace UnityEngine.PostProcessing.Utilities
         #endregion
 
         #region MonoBehaviour functions
-
+        public PostProcessingProfile prof;
         void Start()
         {
             // Replace the profile with its clone.
             var postfx = GetComponent<PostProcessingBehaviour>();
-            _profile = Instantiate<PostProcessingProfile>(postfx.profile);
+            _profile = Instantiate<PostProcessingProfile>(postfx.profile);            
             postfx.profile = _profile;
 
             // Initialize the public structs with the current profile.
