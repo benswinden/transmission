@@ -25,7 +25,7 @@ public class Emitter : MonoBehaviour {
     [Space]    
 
     public GameObject emissionMesh;
-    public bool hideEmissionMesh;
+    public bool hideDebugMeshes;
 
     List<Vector3> vertexList = new List<Vector3>();
 
@@ -39,9 +39,10 @@ public class Emitter : MonoBehaviour {
             vertexList.Add(emissionMesh.transform.TransformPoint(item));
         }
 
-        if (hideEmissionMesh) {
+        if (hideDebugMeshes) {
             emissionMesh.GetComponent<MeshRenderer>().enabled = false;
             GameObject.Find("Culler").GetComponent<MeshRenderer>().enabled = false;
+            GameObject.Find("Focus Point (DOF)").GetComponent<MeshRenderer>().enabled = false;
         }
 
         StartCoroutine("instatiateLoop");
