@@ -4,8 +4,11 @@ using System.Collections.Generic;
 
 public class Emitter : MonoBehaviour {
 
-    public List<Mesh> meshList;
-    public GameObject particlePrefab;
+    public List<GameObject> meshObjectList;
+
+    public List<GameObject> particleMaterials = new List<GameObject>();
+
+    public float scale;
 
     [Space]
 
@@ -13,6 +16,8 @@ public class Emitter : MonoBehaviour {
 
     [Space]
 
+    public bool particleRandomStartRotation;
+    public bool particleGravity;
     public float particleForce;
     public bool randomParticleStartRotation;
 
@@ -54,8 +59,38 @@ public class Emitter : MonoBehaviour {
     }
 
     void createObject() {
+
+        GameObject meshObjectPrefab = meshObjectList[Random.Range(0, meshObjectList.Count)];
+        Vector3 vertex = vertexList[Random.Range(0, vertexList.Count)];
+
+        GameObject newObj = Instantiate(meshObjectPrefab, vertex, Quaternion.identity) as GameObject;        
+
+        bool found = false;
+        foreach (Transform child in newObj.transform) {
+            
+            found = true;
+        }
+
+        if (!found) {
+
+            var tempNewObject = new GameObject();
+            newObj.transform.parent = tempNewObject.transform;            
+            newObj = tempNewObject;
+        }
+
+        newObj.name = "Particle";
+        newObj.AddComponent<Particle>();                
+
+        newObj.GetComponent<Particle>().rigidbodyComponent = newObj.AddComponent<Rigidbody>();
+        newObj.GetComponent<Particle>().rigidbodyComponent.useGravity = particleGravity;
         
-        GameObject obj = Instantiate(particlePrefab, vertexList[Random.Range(0, vertexList.Count)], Quaternion.identity) as GameObject;
-        obj.GetComponent<Particle>().initialize(meshList[Random.Range(0, meshList.Count)], particleForce, randomParticleStartRotation);
+        var collider = newObj.transform.GetChild(0).gameObject.AddComponent<BoxCollider>();
+        collider.isTrigger = true;
+
+        newObj.transform.localScale = new Vector3(scale, scale, scale);
+
+        if (particleForce != 0) newObj.GetComponent<Particle>().rigidbodyComponent.AddForce(transform.up * particleForce, ForceMode.Impulse);
+        if (particleRandomStartRotation) newObj.transform.rotation = Random.rotation;
+
     }
 }
