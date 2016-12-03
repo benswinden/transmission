@@ -8,11 +8,9 @@ public class Emitter : MonoBehaviour {
 
     public List<GameObject> particleMaterials = new List<GameObject>();
 
-    public float scale;
-
     [Space]
 
-    public GameObject emissionMesh;
+    public float scale;    
 
     [Space]
 
@@ -24,8 +22,9 @@ public class Emitter : MonoBehaviour {
 
     public float waitTime = 0.5f;
 
-    [Space]
-    
+    [Space]    
+
+    public GameObject emissionMesh;
     public bool hideEmissionMesh;
 
     List<Vector3> vertexList = new List<Vector3>();
