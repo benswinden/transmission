@@ -4,18 +4,38 @@ using System.Collections;
 
 public class FPSLight : MonoBehaviour {
 
+    public bool startActive;
+    public KeyCode toggleActiveKey;
 
     float deltaTime = 0.0f;
     string currentFPS;
 
-    bool active = true;
+    bool active;
+
+    GameObject background;
+
+    void Awake() {
+
+        foreach (Transform child in transform.parent.transform) {
+            if (child.name.Equals("Background"))
+                background = child.gameObject;
+        }        
+    }
 
     void Start() {
+
+        background.SetActive(false);
+        GetComponent<Text>().text = "";
+
+        if (startActive)
+            toggleActive();        
 
         StartCoroutine("printFPS");
     }
 
     void Update() {
+
+        if (Input.GetKeyUp(toggleActiveKey)) toggleActive();
 
         if (active) {
             deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
@@ -28,11 +48,26 @@ public class FPSLight : MonoBehaviour {
         }
     }
 
+    void toggleActive() {
+
+        if (!active) {
+
+            active = true;
+            background.SetActive(true);
+        }
+        else {
+
+            active = false;
+            background.SetActive(false);
+            GetComponent<Text>().text = "";
+        }
+    }
+
     IEnumerator printFPS() {
 
         yield return new WaitForSeconds(1.0f);
 
-        GetComponent<Text>().text = currentFPS;
+        if (active) GetComponent<Text>().text = currentFPS;
         StartCoroutine("printFPS");
     }
 }
