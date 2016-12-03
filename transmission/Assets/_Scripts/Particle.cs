@@ -24,7 +24,8 @@ public class Particle : MonoBehaviour {
 
     void OnTriggerEnter(Collider other) {
         
-        kill();
+        if (other.tag.Equals("Culler"))
+            kill();
     }
 
     void kill() {
