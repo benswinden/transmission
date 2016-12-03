@@ -3,8 +3,10 @@ using System.Collections;
 
 public class Particle : MonoBehaviour {
 
-    public Rigidbody rigidbodyComponent { get; set; }    
+    public Rigidbody rigidbodyComponent { get; set; }
 
+
+    public Emitter emitter { get; set; }
 
     void OnTriggerEnter(Collider other) {
         
@@ -14,7 +16,6 @@ public class Particle : MonoBehaviour {
 
     void kill() {
 
-        Destroy(gameObject);
+        emitter.objectDeactivated(gameObject);        
     }
-
 }

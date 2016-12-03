@@ -21,14 +21,22 @@ public class Emitter : MonoBehaviour {
     [Space]
 
     public float waitTime = 0.5f;
+    public int maxPoolAmount = 100;
 
     [Space]    
 
     public GameObject emissionMesh;
     public bool hideDebugMeshes;
 
+    [Space]
+
+    public bool printDebug;
+
+
     List<Vector3> vertexList = new List<Vector3>();
 
+    List<GameObject> createdObjectsActive = new List<GameObject>();
+    List<GameObject> createdObjectsInactive = new List<GameObject>();
 
     void Awake() {
 
@@ -48,6 +56,11 @@ public class Emitter : MonoBehaviour {
         StartCoroutine("instatiateLoop");
     }
 
+    void Update() {
+
+        if (printDebug) Debug.Log("Object Pool > [Active: " + createdObjectsActive.Count + " | Inactive: " + createdObjectsInactive.Count + " ]");
+    }
+
     IEnumerator instatiateLoop() {
 
         yield return new WaitForSeconds(waitTime);
@@ -57,13 +70,27 @@ public class Emitter : MonoBehaviour {
         StartCoroutine("instatiateLoop");
     }
 
+
     void createObject() {
+        
+        // Check if we've filled the pool yet        
+        if (createdObjectsActive.Count + createdObjectsInactive.Count < maxPoolAmount) {
+
+            InstantiateNewObject();
+        }
+        else {
+
+            activateNewObject();
+        }
+    }
+
+    void InstantiateNewObject() {
 
         GameObject meshObjectPrefab = meshObjectList[Random.Range(0, meshObjectList.Count)];
-        Vector3 vertex = vertexList[Random.Range(0, vertexList.Count)];
-
-        GameObject newObj = Instantiate(meshObjectPrefab, vertex, Quaternion.identity) as GameObject;        
+        Vector3 vertex = vertexList[Random.Range(0, vertexList.Count)];            
         
+        GameObject newObj = Instantiate(meshObjectPrefab, vertex, Quaternion.identity) as GameObject;        
+
         List<GameObject> meshList = new List<GameObject>();
         foreach (Transform child in newObj.transform) {
 
@@ -77,31 +104,68 @@ public class Emitter : MonoBehaviour {
 
             var tempNewObject = new GameObject();
             tempNewObject.transform.position = vertex;
-            newObj.transform.parent = tempNewObject.transform;            
+            newObj.transform.parent = tempNewObject.transform;
             newObj = tempNewObject;            
         }
 
+        createdObjectsActive.Add(newObj);
         newObj.name = "Particle [ " + meshObjectPrefab.name + " ]";
-        newObj.AddComponent<Particle>();                
+        var particle = newObj.AddComponent<Particle>();     // Switched to referring to the particle component instead of the gameobject to save on a few calls .___.
+        particle.emitter = this;
 
         // Materials
         foreach (GameObject obj in meshList) {
             obj.GetComponent<MeshRenderer>().material = particleMaterials[0];
         }
 
+        // Transform
+        particle.transform.localScale = new Vector3(scale, scale, scale);
+        if (particleRandomStartRotation) particle.transform.rotation = Random.rotation;
+
         // Physics
-        newObj.GetComponent<Particle>().rigidbodyComponent = newObj.AddComponent<Rigidbody>();
-        newObj.GetComponent<Particle>().rigidbodyComponent.useGravity = particleGravity;
+        particle.rigidbodyComponent = newObj.AddComponent<Rigidbody>();
+        particle.rigidbodyComponent.useGravity = particleGravity;
 
-            // Force
-        if (particleForce != 0) newObj.GetComponent<Particle>().rigidbodyComponent.AddForce(transform.up * particleForce, ForceMode.Impulse);
+        // Force
+        if (particleForce != 0) particle.rigidbodyComponent.AddForce(transform.up * particleForce, ForceMode.Impulse);
 
-        var collider = newObj.transform.GetChild(0).gameObject.AddComponent<BoxCollider>();
+        var collider = particle.transform.GetChild(0).gameObject.AddComponent<BoxCollider>();
         collider.isTrigger = true;
+    }
+
+    void activateNewObject() {
+
+        Vector3 vertex = vertexList[Random.Range(0, vertexList.Count)];
+
+        if (createdObjectsInactive.Count == 0) { Debug.Log("Tried to activate a new object but there are no Inactive objects to use. Increase the object pool amount"); return; }
+
+        var inactiveObjectIndex = Random.Range(0, createdObjectsInactive.Count);
+        var particle = createdObjectsInactive[Random.Range(0, createdObjectsInactive.Count)].GetComponent<Particle>();
+
+        createdObjectsInactive.Remove(particle.gameObject);
+        createdObjectsActive.Add(particle.gameObject);
+
+        particle.gameObject.SetActive(true);
+
+        // Materials
+        //foreach (GameObject obj in meshList) {
+        //    obj.GetComponent<MeshRenderer>().material = particleMaterials[0];
+        //}
 
         // Transform
-        newObj.transform.localScale = new Vector3(scale, scale, scale);        
-        if (particleRandomStartRotation) newObj.transform.rotation = Random.rotation;
+        particle.transform.position = vertex;
 
+        // Physics
+        particle.rigidbodyComponent.useGravity = particleGravity;       // This may have changed since it was instatiated
+        particle.rigidbodyComponent.velocity = Vector3.zero;             // Reset velocity
+
+        if (particleForce != 0) particle.rigidbodyComponent.AddForce(transform.up * particleForce, ForceMode.Impulse);
+    }
+
+    public void objectDeactivated(GameObject obj) {
+
+        createdObjectsActive.Remove(obj);
+        createdObjectsInactive.Add(obj);
+        obj.SetActive(false);
     }
 }
