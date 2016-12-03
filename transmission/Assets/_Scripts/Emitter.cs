@@ -18,8 +18,7 @@ public class Emitter : MonoBehaviour {
 
     public bool particleRandomStartRotation;
     public bool particleGravity;
-    public float particleForce;
-    public bool randomParticleStartRotation;
+    public float particleForce;    
 
     [Space]
 
