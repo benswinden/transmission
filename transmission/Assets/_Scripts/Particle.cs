@@ -14,13 +14,17 @@ public class Particle : MonoBehaviour {
     public void initialize(Mesh mesh, float particleForce, bool randomStartRotation) {
 
         GetComponentInChildren<MeshFilter>().mesh = mesh;
+        GetComponentInChildren<MeshFilter>().gameObject.AddComponent<BoxCollider>();
+        GetComponentInChildren<BoxCollider>().isTrigger = true;
+        
+
         if (particleForce != 0) rigidbodyComponent.AddForce(transform.up * particleForce, ForceMode.Impulse);
         if (randomStartRotation) transform.rotation = Random.rotation;
     }
 
     void OnTriggerEnter(Collider other) {
-
-        //kill();
+        
+        kill();
     }
 
     void kill() {
