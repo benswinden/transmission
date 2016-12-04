@@ -6,17 +6,27 @@ public class Emitter : MonoBehaviour {
 
     public List<GameObject> meshObjectList;
 
-    public List<Material> particleMaterials;
+    //public List<Material> particleMaterials;
 
     [Space]
 
-    public float scale;    
+    public float scaleMin;    
+    public float scaleMax;    
 
     [Space]
 
     public bool particleRandomStartRotation;
     public bool particleGravity;
-    public float particleForce;    
+    
+    [Space]
+
+    public float forceMin;    
+    public float forceMax;
+
+    [Space]
+
+    public float angularForceMin;
+    public float angularForceMax;
 
     [Space]
 
@@ -114,11 +124,26 @@ public class Emitter : MonoBehaviour {
         particle.emitter = this;
 
         // Materials
-        foreach (GameObject obj in meshList) {
-            obj.GetComponent<MeshRenderer>().material = particleMaterials[0];
-        }
+        //foreach (GameObject obj in meshList) {
+
+        //    var importedMaterialName = obj.GetComponent<MeshRenderer>().material.name;
+        //    importedMaterialName = importedMaterialName.Substring(0, importedMaterialName.Length - 11);
+
+        //    Material materialToUse = particleMaterials[0];
+        //    foreach (Material mat in particleMaterials) {
+
+        //        if (importedMaterialName.Equals(mat.name)) {
+
+        //            materialToUse = mat;
+        //            break;
+        //        }
+        //    }
+
+        //    obj.GetComponent<MeshRenderer>().material = materialToUse;
+        //}
 
         // Transform
+        var scale = Random.Range(scaleMin, scaleMax);
         particle.transform.localScale = new Vector3(scale, scale, scale);
         if (particleRandomStartRotation) particle.transform.rotation = Random.rotation;
 
@@ -127,7 +152,9 @@ public class Emitter : MonoBehaviour {
         particle.rigidbodyComponent.useGravity = particleGravity;
 
         // Force
-        if (particleForce != 0) particle.rigidbodyComponent.AddForce(transform.up * particleForce, ForceMode.Impulse);
+        if (forceMax != 0) particle.rigidbodyComponent.AddForce(transform.up * Random.Range(forceMin, forceMax), ForceMode.Impulse);
+
+        if (angularForceMax != 0) particle.rigidbodyComponent.AddTorque(Vector3.forward * Random.Range(angularForceMin, angularForceMax), ForceMode.Impulse);
 
         var collider = particle.transform.GetChild(0).gameObject.AddComponent<BoxCollider>();
         collider.isTrigger = true;
@@ -158,8 +185,10 @@ public class Emitter : MonoBehaviour {
         // Physics
         particle.rigidbodyComponent.useGravity = particleGravity;       // This may have changed since it was instatiated
         particle.rigidbodyComponent.velocity = Vector3.zero;             // Reset velocity
+        particle.rigidbodyComponent.angularVelocity = Vector3.zero;
 
-        if (particleForce != 0) particle.rigidbodyComponent.AddForce(transform.up * particleForce, ForceMode.Impulse);
+        if (angularForceMax != 0) particle.rigidbodyComponent.AddTorque(Vector3.right * Random.Range(angularForceMin, angularForceMax), ForceMode.Impulse);
+        if (forceMax != 0) particle.rigidbodyComponent.AddForce(transform.forward * Random.Range(forceMin, forceMax), ForceMode.Impulse);
     }
 
     public void objectDeactivated(GameObject obj) {

@@ -14,16 +14,20 @@ public class Manager : MonoBehaviour {
 
     [Space]
 
-    public int gifWidth = 320;
-    public int gifHeight = 240;
+    //public int gifWidth = 320;
+    //public int gifHeight = 240;       
 
-   
+    [HideInInspector]
+    public float timeScale;
+
+
     string currentScene;            // Keep track of which level we are in for reloading
 
 
-
     void Awake() {
-        
+
+        timeScale = Time.timeScale;
+
         currentScene = SceneManager.GetActiveScene().name;            
 
         // Create a folder
@@ -34,6 +38,8 @@ public class Manager : MonoBehaviour {
     }
 
 	void Update() {
+
+        if (Time.timeScale != timeScale) Time.timeScale = timeScale;
 
         if (Input.GetKeyUp(screenshotKey)) {
             takeScreenshot();
