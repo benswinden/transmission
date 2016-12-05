@@ -8,6 +8,8 @@ using System.IO;
 
 public class Manager : MonoBehaviour {
 
+    public static CameraFollow camera;
+
     public Camera screenshotCamera;
     public KeyCode screenshotKey;
     public int screenshotSizeFactor = 3;

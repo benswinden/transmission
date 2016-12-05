@@ -38,7 +38,7 @@ public class Emitter : MonoBehaviour {
 
     [Space]    
 
-    public GameObject emissionMesh;
+    public GameObject emissionGrid;
     public bool hideDebugMeshes;
 
     [Space]
@@ -46,25 +46,32 @@ public class Emitter : MonoBehaviour {
     public bool printDebug;
 
 
-    List<Vector3> vertexList = new List<Vector3>();
+    GameObject particleParent;
+
+
+    List<Vector3> emissionPointList = new List<Vector3>();
 
     List<GameObject> createdObjectsActive = new List<GameObject>();
     List<GameObject> createdObjectsInactive = new List<GameObject>();
 
     void Awake() {
 
-        var verticeList = emissionMesh.GetComponent<MeshFilter>().mesh.vertices;
+        foreach (Transform child in emissionGrid.transform) {
 
-        foreach (var item in verticeList) {
+            emissionPointList.Add(child.position);
 
-            vertexList.Add(emissionMesh.transform.TransformPoint(item));
+            if (hideDebugMeshes) child.GetComponent<MeshRenderer>().enabled = false;
         }
+
 
         if (hideDebugMeshes) {
-            emissionMesh.GetComponent<MeshRenderer>().enabled = false;
-            GameObject.Find("Culler").GetComponent<MeshRenderer>().enabled = false;
+            
             GameObject.Find("Focus Point (DOF)").GetComponent<MeshRenderer>().enabled = false;
         }
+
+        particleParent = new GameObject();
+        particleParent.name = "Particle Parent";
+        particleParent.transform.parent = transform;
 
         StartCoroutine("instatiateLoop");
     }
@@ -101,9 +108,9 @@ public class Emitter : MonoBehaviour {
     void InstantiateNewObject() {
 
         GameObject meshObjectPrefab = meshObjectList[Random.Range(0, meshObjectList.Count)];
-        Vector3 vertex = vertexList[Random.Range(0, vertexList.Count)];            
+        Vector3 emissionPoint = emissionPointList[Random.Range(0, emissionPointList.Count)];            
         
-        GameObject newObj = Instantiate(meshObjectPrefab, vertex, Quaternion.identity) as GameObject;        
+        GameObject newObj = Instantiate(meshObjectPrefab, emissionPoint, Quaternion.identity) as GameObject;        
 
         List<GameObject> meshList = new List<GameObject>();
         foreach (Transform child in newObj.transform) {
@@ -117,7 +124,7 @@ public class Emitter : MonoBehaviour {
             meshList.Add(newObj);
 
             var tempNewObject = new GameObject();
-            tempNewObject.transform.position = vertex;
+            tempNewObject.transform.position = emissionPoint;
             newObj.transform.parent = tempNewObject.transform;
             newObj = tempNewObject;            
         }
@@ -129,7 +136,7 @@ public class Emitter : MonoBehaviour {
         // Variables
         particle.emitter = this;
         particle.distanceToKill = distanceToKill;
-        particle.pointOfEmission = vertex;
+        particle.pointOfEmission = emissionPoint;
 
 
         // Materials
@@ -152,21 +159,22 @@ public class Emitter : MonoBehaviour {
         //}
 
         // Transform
+        particle.transform.parent = particleParent.transform;
         var scale = Random.Range(scaleMin, scaleMax);
         particle.transform.localScale = new Vector3(scale, scale, scale);
-        if (randomStartRotation) particle.transform.rotation = Random.rotation;
+        if (randomStartRotation) particle.setRandomRotation();
        
 
         // Force
         if (forceMax != 0) particle.AddForce(transform.up * Random.Range(forceMin, forceMax));
 
-        if (rotationSpeedMax != 0) particle.setRotation(rotationSpeedMin, rotationSpeedMax);
+        if (rotationSpeedMax != 0) particle.setRotationValues(rotationSpeedMin, rotationSpeedMax);
 
     }
 
     void activateNewObject() {
 
-        Vector3 vertex = vertexList[Random.Range(0, vertexList.Count)];
+        Vector3 emissionPoint = emissionPointList[Random.Range(0, emissionPointList.Count)];
 
         if (createdObjectsInactive.Count == 0) { Debug.Log("Tried to activate a new object but there are no Inactive objects to use. Increase the object pool amount"); return; }
 
@@ -182,7 +190,7 @@ public class Emitter : MonoBehaviour {
 
         // Variables        
         particle.distanceToKill = distanceToKill;
-        particle.pointOfEmission = vertex;
+        particle.pointOfEmission = emissionPoint;
 
         // Materials
         //foreach (GameObject obj in meshList) {
@@ -190,10 +198,13 @@ public class Emitter : MonoBehaviour {
         //}
 
         // Transform
-        particle.transform.position = vertex;
+        particle.transform.position = emissionPoint;
+        var scale = Random.Range(scaleMin, scaleMax);
+        particle.transform.localScale = new Vector3(scale, scale, scale);
+        if (randomStartRotation) particle.setRandomRotation();
 
         // Force                
-        if (rotationSpeedMax != 0) particle.setRotation(rotationSpeedMin, rotationSpeedMax);
+        if (rotationSpeedMax != 0) particle.setRotationValues(rotationSpeedMin, rotationSpeedMax);
         if (forceMax != 0) particle.AddForce(transform.forward * Random.Range(forceMin, forceMax));
     }
 
