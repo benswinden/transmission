@@ -45,9 +45,8 @@ public class Emitter : MonoBehaviour {
 
     public bool printDebug;
 
-
-    GameObject particleParent;
-
+    Dictionary<string, List<GameObject>> listsOfMeshes = new Dictionary<string, List<GameObject>>();
+    GameObject particleParent;      // The parent object into which we'll put all particles
 
     List<Vector3> emissionPointList = new List<Vector3>();
 
@@ -140,23 +139,16 @@ public class Emitter : MonoBehaviour {
 
 
         // Materials
-        //foreach (GameObject obj in meshList) {
+        foreach (GameObject obj in meshList) {
 
-        //    var importedMaterialName = obj.GetComponent<MeshRenderer>().material.name;
-        //    importedMaterialName = importedMaterialName.Substring(0, importedMaterialName.Length - 11);
+            var importedMaterialName = obj.GetComponent<MeshRenderer>().material.name;
+            importedMaterialName = importedMaterialName.Substring(0, importedMaterialName.Length - 11);
 
-        //    Material materialToUse = particleMaterials[0];
-        //    foreach (Material mat in particleMaterials) {
+            if (!listsOfMeshes.ContainsKey(importedMaterialName))               
+                listsOfMeshes.Add(importedMaterialName, new List<GameObject>());            
 
-        //        if (importedMaterialName.Equals(mat.name)) {
-
-        //            materialToUse = mat;
-        //            break;
-        //        }
-        //    }
-
-        //    obj.GetComponent<MeshRenderer>().material = materialToUse;
-        //}
+            listsOfMeshes[importedMaterialName].Add(obj);           // Add that mesh to the list of objects with that material
+        }
 
         // Transform
         particle.transform.parent = particleParent.transform;
