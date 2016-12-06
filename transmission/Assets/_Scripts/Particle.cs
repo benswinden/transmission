@@ -37,13 +37,13 @@ public class Particle : MonoBehaviour {
         StartCoroutine("checkDistance");
     }
 
-    void Update() {
+    void FixedUpdate() {
 
         // Movement
         if (velocity != Vector3.zero) {
 
             var targetPos = transform.position += velocity;
-            transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref _velocity, dampTime);            
+            transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref _velocity, dampTime);
         }
 
         // Rotation
@@ -53,7 +53,6 @@ public class Particle : MonoBehaviour {
                 meshList[i].transform.Rotate(rotationAxisList[i], rotationSpeedList[i]);
         }        
     }
-
 
     public void AddForce(Vector3 force) {
 

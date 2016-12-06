@@ -70,6 +70,11 @@ public class Manager : MonoBehaviour {
             takeScreenshot();
         }
 
+        if (Input.GetKeyUp(KeyCode.R)) {
+
+            SceneManager.LoadScene(0);
+        }
+
         if (SceneManager.GetActiveScene().name != currentScene) {
             currentScene = SceneManager.GetActiveScene().name;            
         }  
