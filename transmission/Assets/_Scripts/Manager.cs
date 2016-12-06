@@ -16,6 +16,9 @@ public class Manager : MonoBehaviour {
 
     [Space]
 
+    public bool hideDebugMeshes;
+    public List<GameObject> debugMeshes;
+
     //public int gifWidth = 320;
     //public int gifHeight = 240;       
 
@@ -36,6 +39,26 @@ public class Manager : MonoBehaviour {
         if (!Application.isEditor) {
 
             System.IO.Directory.CreateDirectory(Application.dataPath + "/Screenshots");
+        }
+    }
+
+    void Start() {
+        
+        // Hides any meshes in this list, if it's not a mesh, looks to that objects children for meshes to hide
+        if (hideDebugMeshes) {
+            foreach (GameObject obj in debugMeshes) {
+
+                if (obj.GetComponent<MeshRenderer>())
+                    obj.GetComponent<MeshRenderer>().enabled = false;
+                else {
+                    foreach (Transform child in obj.transform) {
+
+                        if (child.GetComponent<MeshRenderer>())
+                            child.GetComponent<MeshRenderer>().enabled = false;
+                    }
+                }
+
+            }
         }
     }
 

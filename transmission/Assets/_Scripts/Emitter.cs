@@ -38,8 +38,7 @@ public class Emitter : MonoBehaviour {
 
     [Space]    
 
-    public GameObject emissionGrid;
-    public bool hideDebugMeshes;
+    public GameObject emissionGrid;    
 
     [Space]
 
@@ -58,14 +57,6 @@ public class Emitter : MonoBehaviour {
         foreach (Transform child in emissionGrid.transform) {
 
             emissionPointList.Add(child.position);
-
-            if (hideDebugMeshes) child.GetComponent<MeshRenderer>().enabled = false;
-        }
-
-
-        if (hideDebugMeshes) {
-            
-            GameObject.Find("Focus Point (DOF)").GetComponent<MeshRenderer>().enabled = false;
         }
 
         particleParent = new GameObject();
