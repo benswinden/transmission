@@ -63,12 +63,18 @@ public class Emitter : MonoBehaviour {
         particleParent.name = "Particle Parent";
         particleParent.transform.parent = transform;
 
-        StartCoroutine("instatiateLoop");
+        StartCoroutine("startRoutine");
     }
 
     void Update() {
 
         if (printDebug) Debug.Log("Object Pool > [Active: " + createdObjectsActive.Count + " | Inactive: " + createdObjectsInactive.Count + " ]");
+    }
+
+    IEnumerator startRoutine() {
+
+        yield return new WaitForSeconds(40);
+        StartCoroutine("instatiateLoop");
     }
 
     IEnumerator instatiateLoop() {
